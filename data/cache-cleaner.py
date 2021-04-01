@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 '''This kills unneeded fields in the Freebase topic cache (to parse faster).'''
 import glob
 import json
@@ -11,7 +11,7 @@ OK_FIELDS = [
 ]
 
 for p in glob.glob('/var/tmp/freebase/*.json'):
-    data = json.load(file(p))
+    data = json.load(open(p))
     if 'property' not in data:
         continue  # maybe an error response
 
@@ -21,4 +21,4 @@ for p in glob.glob('/var/tmp/freebase/*.json'):
         if k not in OK_FIELDS:
             del props[k]
 
-    json.dump(data, file(p, 'w'), indent=1, sort_keys=True)
+    json.dump(data, open(p, 'w'), indent=1, sort_keys=True)

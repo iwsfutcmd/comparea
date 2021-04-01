@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 '''Produces a small list of OSM (type, id) pairs for inclusion in Comparea.
 
 Inclusion criteria:
@@ -17,6 +17,7 @@ import csv
 import json
 import os
 import sys
+
 from data import osm
 from data import fetch_metadata
 from data import freebase
@@ -93,7 +94,7 @@ def main(args):
         path = os.path.join(osm_fetcher.cache_dir,
                 '%s%s.xml.json' % (osm_type, osm_id))
         try:
-            d = json.load(file(path))
+            d = json.load(open(path))
         except (ValueError, IOError):
             continue
 
@@ -132,7 +133,7 @@ def main(args):
                 pass_condition = ['admin_pop', str(admin_level), str(d.get('population'))]
 
         if pass_condition:
-            print '\t'.join(row + pass_condition)
+            print('\t'.join(row + pass_condition))
 
 
 

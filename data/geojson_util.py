@@ -49,13 +49,13 @@ def check_feature_collection(collection):
             raise ValueError('(feature %d) %s' % (i, e))
 
 
-pa = Proj("+proj=aea")  # +lat_1=37.0 +lat_2=41.0 +lat_0=39.0 +lon_0=-106.55")
+pa = Proj("+proj=aea +lat_1=37.0 +lat_2=41.0")
 def _lon_lats_to_shape(lon_lats, p=None):
     global pa
     if not p: p = pa
-    lon, lat = zip(*lon_lats)
+    lon, lat = list(zip(*lon_lats))
     x, y = p(lon, lat)
-    cop = {"type": "Polygon", "coordinates": [zip(x, y)]}
+    cop = {"type": "Polygon", "coordinates": [list(zip(x, y))]}
     return shape(cop)
 
 
@@ -173,8 +173,8 @@ def bbox_of_feature(feature):
 
 
 def _bbox_of_polygon(lon_lats):
-    lons = map(lambda x: x[0], lon_lats)
-    lats = map(lambda x: x[1], lon_lats)
+    lons = [x[0] for x in lon_lats]
+    lats = [x[1] for x in lon_lats]
     return [min(lats), min(lons), max(lats), max(lons)]
 
 
@@ -205,8 +205,7 @@ def solidity_of_feature(feature):
 
 def _is_coord_list_clockwise(coords):
     # see http://stackoverflow.com/a/1165943/388951
-    return sum(map(lambda (c1, c2): (c2[0]-c1[0])*(c2[1]+c1[1]),
-        zip(coords, coords[1:] + [coords[-1]]))) > 0
+    return sum([(c1_c2[1][0]-c1_c2[0][0])*(c1_c2[1][1]+c1_c2[0][1]) for c1_c2 in zip(coords, coords[1:] + [coords[-1]])]) > 0
 
 
 def make_polygons_clockwise(feature):

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 '''This script fetches freebase data for OSM features.
 
 Input is a CSV file looking like:

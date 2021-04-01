@@ -38,11 +38,9 @@ def quotekey(ustr):
     valid_interior_only = valid_always + '_-'
 
     if isinstance(ustr, str):
-        s = unicode(ustr,'utf-8')        
-    elif isinstance(ustr, unicode):
         s = ustr
     else:
-        raise ValueError, 'quotekey() expects utf-8 string or unicode'
+        raise ValueError('quotekey() expects utf-8 string or unicode')
 
     output = []
     if s[0] in valid_always:
@@ -83,12 +81,12 @@ def unquotekey(key, encoding=None):
             i += 1
         elif key[i] == '$' and i+4 < len(key):
             # may raise ValueError if there are invalid characters
-            output.append(unichr(int(key[i+1:i+5],16)))
+            output.append(chr(int(key[i+1:i+5],16)))
             i += 5
         else:
-            raise ValueError, "unquote key saw invalid character '%s' at position %d" % (key[i], i)
+            raise ValueError("unquote key saw invalid character '%s' at position %d" % (key[i], i))
 
-    ustr = u''.join(output)
+    ustr = ''.join(output)
     
     if encoding is None:
         return ustr
@@ -101,9 +99,9 @@ def urlencode_pathseg(data):
     '''
     urlencode for placement between slashes in an url.
     '''
-    if isinstance(data, unicode):
+    if isinstance(data, str):
         data = data.encode('utf_8')
-    return urllib.quote(data, "~:@$!*,;=&+")
+    return urllib.parse.quote(data, "~:@$!*,;=&+")
 
 
 def id_to_urlid(id):
@@ -126,7 +124,7 @@ def id_to_urlid(id):
         return '%23' + id[1:]
 
     if id[0] != '/':
-        raise ValueError, 'unknown id format %s' % id
+        raise ValueError('unknown id format %s' % id)
 
     # ok, we have a slash-path
     # requote components as keys and rejoin.

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 '''Load freebase topic JSON for each feature.
 
 This includes goodies like descriptions, population and area.
@@ -7,8 +7,7 @@ This includes goodies like descriptions, population and area.
 import os
 import json
 import sys
-import urllib
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 
 from data import mqlkey
 
@@ -22,11 +21,11 @@ MONKEY_PATCHES = {
 def _path(filename):
     return os.path.join(os.path.dirname(__file__), filename)
 
-TOPIC_OVERRIDES = json.load(file(_path('topic-overrides.json')))
+TOPIC_OVERRIDES = json.load(open(_path('topic-overrides.json')))
 
 class Freebase(object):
     '''Freebase Topic API wrapper. Maps wikipedia title --> topic JSON.'''
-    service_url = u'https://www.googleapis.com/freebase/v1/topic'
+    service_url = 'https://www.googleapis.com/freebase/v1/topic'
     cache_dir = '/var/tmp/freebase'
 
     def __init__(self, api_key=None, use_cache=True):
@@ -44,7 +43,7 @@ class Freebase(object):
         p = self._cache_file(title)
         if os.path.exists(p):
             try:
-                d = json.load(file(p))
+                d = json.load(open(p))
             except ValueError:
                 sys.stderr.write('Unable to decode json for %s, %s\n' % (title, p))
                 raise
@@ -60,7 +59,7 @@ class Freebase(object):
         params = [
             ('key', self._key),
             ('limit', 1000)  # get population at lots of dates!
-        ] + map(lambda x: ('filter', x), PREDICATE_PREFIXES)
+        ] + [('filter', x) for x in PREDICATE_PREFIXES]
 
         if title in MONKEY_PATCHES:
             title = MONKEY_PATCHES[title]
@@ -70,7 +69,7 @@ class Freebase(object):
         else:
             title_key = quotekey(title)
             topic_id = '/wikipedia/en_title/%s' % title_key
-        url = self.service_url + topic_id + '?' + urllib.urlencode(params)
+        url = self.service_url + topic_id + '?' + urllib.parse.urlencode(params)
         return url
 
     def get_topic_json(self, title):
@@ -80,7 +79,7 @@ class Freebase(object):
 
         url = self._construct_url(title)
         sys.stderr.write('Fetching %s\n' % url)
-        data = urllib2.urlopen(url, None, 10.0).read()
+        data = urllib.request.urlopen(url, None, 10.0).read()
         #if self._use_cache:
         open(self._cache_file(title), 'w').write(data)
         return json.loads(data)
@@ -90,19 +89,17 @@ WIKI_URL_PREFIX = 'http://en.wikipedia.org/wiki/'
 def wiki_url_to_title(uurl):
     if isinstance(uurl, str):
         url = uurl
-    elif isinstance(uurl, unicode):
-        url = uurl.encode('utf-8')
     else:
-        raise ValueError, 'wiki_url_to_title() expects utf-8 string or unicode'
+        raise ValueError('wiki_url_to_title() expects utf-8 string or unicode')
 
     if WIKI_URL_PREFIX not in url:
         sys.stderr.write('ERROR Invalid wiki URL: %s\n' % url)
         return None
 
     title = url.replace(WIKI_URL_PREFIX, '')
-    title = urllib.unquote(title)
+    title = urllib.parse.unquote(title)
     title = title.replace('_', ' ')
-    return title.decode('utf-8')
+    return title
 
 
 def get_aliases(topic):
@@ -122,7 +119,7 @@ if __name__ == '__main__':
     freebase = Freebase()
     freebase_nocache = Freebase(use_cache=False)
 
-    gj = json.load(file("comparea/static/data/comparea.geo.json"))
+    gj = json.load(open("comparea/static/data/comparea.geo.json"))
     for feature in gj['features']:
         props = feature['properties']
         url = props['wikipedia_url']

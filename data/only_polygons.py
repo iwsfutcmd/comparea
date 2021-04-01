@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 '''Removes all non-polygon features from a GeoJSON file.
 
 For now, these must be FeatureCollections of Features.
@@ -31,5 +31,5 @@ def remove_non_polygons(d):
 
 if __name__ == '__main__':
     assert len(sys.argv) == 2
-    d = json.load(file(sys.argv[1]))
-    print json.dumps(d, indent=2)
+    d = json.load(open(sys.argv[1]))
+    print(json.dumps(d, indent=2))

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 '''Library for fetching shape data from OSM.
 
 When run from the command line, it will read in a CSV file of:
@@ -11,11 +11,11 @@ And fetch all of them into its local cache.
 import csv
 import sys
 import time
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import os
 
 class OSM(object):
-    service_url = u'http://www.openstreetmap.org/api/0.6'
+    service_url = 'http://www.openstreetmap.org/api/0.6'
     cache_dir = '/var/tmp/osm'
     max_fetch_rate = 2.0  # 2.0 seconds between fetches
 
@@ -32,7 +32,7 @@ class OSM(object):
         if not self._use_cache: return None
         p = self._cache_file(osm_type, osm_id)
         if os.path.exists(p):
-            d = file(p).read()
+            d = open(p).read()
             #sys.stderr.write('Loaded %s/%s from cache.\n' % (osm_type, osm_id))
             return d
         else:
@@ -57,7 +57,7 @@ class OSM(object):
         self._last_fetch_time = time.time()
         # 10 second timeout
         sys.stderr.write('%s Fetching %s\n' % (time.ctime(), url))
-        data = urllib2.urlopen(url, None, 10).read()
+        data = urllib.request.urlopen(url, None, 10).read()
         open(self._cache_file(osm_type, osm_id), 'w').write(data)
         return data
 

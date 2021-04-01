@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 '''Outputs a spreadsheet calling out missing properties for each feature.'''
 
 import json
@@ -6,7 +6,7 @@ import sys
 
 from data import generate_geojson
 
-data = json.load(file('comparea/static/data/comparea.geo.json'))
+data = json.load(open('comparea/static/data/comparea.geo.json'))
 
 defaults = generate_geojson.DEFAULT_METADATA
 fields = defaults.keys()

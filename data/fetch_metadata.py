@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 '''Construct a mapping from Comparea ID --> freebase properties.
 
@@ -62,7 +62,7 @@ def extract_population(pop_topic, metadata):
         except KeyError:
             return False
 
-    vals = filter(has_source, pop_topic['values'])
+    vals = list(filter(has_source, pop_topic['values']))
     if not vals:
         return
     vals.sort(key=get_year)
@@ -89,7 +89,7 @@ def extract_freebase_metadata(key, title, d):
         try:
             en_value = en_values[0]
         except IndexError:
-            descs = json.load(file(_path('descriptions.json')))
+            descs = json.load(open(_path('descriptions.json')))
             en_value = descs[key]
         metadata['description'] = trim_description(en_value, max_chars=300)
     except KeyError:
@@ -115,7 +115,7 @@ def run():
     freebase_api = freebase.Freebase()
 
     output = {}
-    gj = json.load(file("comparea/static/data/comparea.geo.json"))
+    gj = json.load(open("comparea/static/data/comparea.geo.json"))
     wiki_url_prefix = 'http://en.wikipedia.org/wiki/'
 
     for feature in gj['features']:
@@ -148,7 +148,7 @@ def run():
             pass  # no manual data
         output[key] = md
 
-    print json.dumps(output, indent=2, sort_keys=True)
+    print(json.dumps(output, indent=2, sort_keys=True))
 
 
 if __name__ == '__main__':

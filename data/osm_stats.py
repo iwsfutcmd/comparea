@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 '''Collect statistics about OSM features.'''
 
 from collections import defaultdict
@@ -39,7 +39,7 @@ admins = defaultdict(int)
 
 for path in glob.glob(os.path.join(osm_fetcher.cache_dir, '*.json')):
     try:
-        d = json.load(file(path))
+        d = json.load(open(path))
     except ValueError:
         continue
 

@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 '''Summarize Natural Earth GeoJSON.
 '''
 
 import json
 import sys
-import geojson_util
+from data import geojson_util
 
 fields = ['index', 'id', 'name', 'area_km2', 'area_calculated']
 
@@ -40,7 +40,7 @@ def process_features(geojson):
 
 def run(args):
     assert len(args) == 2
-    geojson = json.load(file(args[1]))
+    geojson = json.load(open(args[1]))
     assert geojson['type'] == 'FeatureCollection'
 
     print '\t'.join(fields)

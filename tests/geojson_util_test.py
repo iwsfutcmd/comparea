@@ -13,22 +13,23 @@ def _path(filename):
 class GeoJsonUtilTest(unittest.TestCase):
 
     def setUp(self):
-        self.kgz = json.load(file(_path('kgz.json')))
+        with open(_path('kgz.json')) as file:
+            self.kgz = json.load(file)
 
     def tearDown(self):
         pass
 
     def test_get_area_of_polygon(self):
         coords = self.kgz['geometry']['coordinates'][0]
-        self.assertEquals(349, len(coords))
+        self.assertEqual(349, len(coords))
         area = geojson_util.get_area_of_polygon(coords)
         area_km2 = area / 1e6
-        self.assertEquals(199486, round(area_km2))
+        self.assertEqual(199486, round(area_km2))
 
     def test_get_area_of_feature(self):
         area = geojson_util.get_area_of_feature(self.kgz)
         area_km2 = area / 1e6
-        self.assertEquals(199486, round(area_km2))
+        self.assertEqual(199486, round(area_km2))
 
 
 if __name__ == '__main__':

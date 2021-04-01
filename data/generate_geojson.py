@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 '''Munge Natural Earth GeoJSON into a format comparea likes.
 
 Usage:
@@ -37,7 +37,7 @@ _metadata = None
 def get_metadata(code, existing_props=None):
     global _metadata
     if not _metadata:
-        _metadata = json.load(file(_path('metadata.json')))
+        _metadata = json.load(open(_path('metadata.json')))
     d = {}
     d.update(DEFAULT_METADATA)
     if existing_props:
@@ -288,7 +288,7 @@ def process_features(geojson, fn):
 
 
 def load_geojson(filename, process_fn):
-    geojson = json.load(file(_path(filename)))
+    geojson = json.load(open(_path(filename)))
     assert geojson['type'] == 'FeatureCollection'
     features = process_features(geojson, process_fn)
     # geojson_util.check_feature_collection(features)
@@ -332,7 +332,7 @@ def remove_features_with_missing_properties(feature_collection):
 
 
 def remove_blacklisted_features(feature_collection):
-    blacklist = json.load(file(_path('blacklist.json')))
+    blacklist = json.load(open(_path('blacklist.json')))
     blacklist_ids = [f['id'] for f in blacklist]
 
     new_collect = []
@@ -348,7 +348,7 @@ def run(args):
     subunits = load_geojson('subunits.json', process_subunit)
     admin0 = adjust_countries(countries, subunits)
 
-    continent_list = map(process_continent, json.load(file('data/continents.geo.json')))
+    continent_list = map(process_continent, json.load(open('data/continents.geo.json')))
     continent_list = [c for c in continent_list if c]
     adjust_continents(continent_list, subunits)
 

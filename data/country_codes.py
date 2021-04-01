@@ -18,7 +18,7 @@ def _load_codes():
     global iso3_to_url
     iso3_to_url = {}
     p = os.path.join(os.path.dirname(__file__), 'countrycodes.wiki.txt')
-    for line in file(p):
+    for line in open(p):
         parts = line.strip()[1:].split('||')  # strip leading '|'
         if len(parts) != 5: continue
         iso3 = parts[4]
